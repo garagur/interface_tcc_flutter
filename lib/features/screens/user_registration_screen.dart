@@ -187,7 +187,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                             _isActive = value;
                           });
                         },
-                        activeColor: Colors.teal,
+                        activeThumbColor: Colors.teal,
                       ),
                     ],
                   ),

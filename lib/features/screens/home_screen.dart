@@ -4,6 +4,8 @@ import 'equipment_registration_screen.dart';
 import 'user_registration_screen.dart';
 import 'schedule_detail_screen.dart';
 import 'schedules_by_item_screen.dart';
+import 'package:tcc_yoji/features/auth/services/logout_service.dart';
+import 'package:tcc_yoji/features/screens/login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final String matricula;
@@ -153,10 +155,20 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
+          // Troca o IconButton do logout por esse:
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context);
+            onPressed: () async {
+              final logoutService = LogoutService();
+              await logoutService.logoutUser();
+
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false, // Remove todas as rotas anteriores
+                );
+              }
             },
           ),
         ],
