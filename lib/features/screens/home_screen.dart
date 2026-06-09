@@ -4,7 +4,7 @@ import 'equipment_registration_screen.dart';
 import 'user_registration_screen.dart';
 import 'schedule_detail_screen.dart';
 import 'schedules_by_item_screen.dart';
-import 'package:tcc_yoji/features/auth/services/logout_service.dart';
+import 'package:tcc_yoji/features/auth/services/User_Services/logout_service.dart';
 import 'package:tcc_yoji/features/screens/login_screen.dart';
 
 class HomeScreen extends StatelessWidget {

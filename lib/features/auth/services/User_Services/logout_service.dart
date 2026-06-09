@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-import 'package:tcc_yoji/core/contants/api_constants.dart';
+import 'package:tcc_yoji/config/routes/User_endpoints.dart';
 import 'package:tcc_yoji/core/storage/securite_storage_service.dart';
 
 class LogoutService {
@@ -16,7 +16,7 @@ class LogoutService {
 
     try {
       await http.post(
-        Uri.parse(ApiConstants.logout),
+        Uri.parse(UsersRotesServices.logout),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',

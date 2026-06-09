@@ -6,7 +6,6 @@ class AuthResponse {
   AuthResponse({required this.token, this.user, required this.rawData});
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
-    // Equivalente ao getTokenFromResponse do JS
     final token =
         json['token'] ??
         json['access_token'] ??
@@ -14,10 +13,8 @@ class AuthResponse {
         json['accessToken'] ??
         '';
 
-    // Equivalente ao user do JS
     final user =
         json['user'] ?? json['data']?['user'] ?? json['data']?['userData'];
-
     return AuthResponse(token: token, user: user, rawData: json);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_yoji/features/auth/services/login_service.dart';
+import 'package:tcc_yoji/features/auth/services/User_Services/login_service.dart';
 import 'package:tcc_yoji/features/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,24 +12,43 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _matriculaController = TextEditingController();
-  final _senhaController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _otpController = TextEditingController();
   final _loginService = LoginService();
 
-  String _erroLogin = '';
+  // Controla em qual etapa estamos
+  bool _otpEnviado = false;
+  String _erro = '';
   bool _carregando = false;
 
-  // Equivalente ao handleSubmit do Svelte
-  Future<void> _handleSubmit() async {
+  // Etapa 1 — envia OTP
+  Future<void> _handleSendOtp() async {
     setState(() {
-      _erroLogin = '';
+      _erro = '';
+      _carregando = true;
+    });
+
+    try {
+      await _loginService.sendOtp(_emailController.text.trim());
+      setState(() => _otpEnviado = true);
+    } catch (e) {
+      setState(() => _erro = e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      setState(() => _carregando = false);
+    }
+  }
+
+  // Etapa 2 — valida OTP e loga
+  Future<void> _handleLogin() async {
+    setState(() {
+      _erro = '';
       _carregando = true;
     });
 
     try {
       final data = await _loginService.loginUser(
-        _matriculaController.text,
-        _senhaController.text,
+        _emailController.text.trim(),
+        _otpController.text.trim(),
       );
 
       widget.onLogin?.call(data);
@@ -45,16 +64,25 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
-      setState(() => _erroLogin = e.toString().replaceFirst('Exception: ', ''));
+      setState(() => _erro = e.toString().replaceFirst('Exception: ', ''));
     } finally {
       setState(() => _carregando = false);
     }
   }
 
+  // Volta para a etapa do email
+  void _voltarParaEmail() {
+    setState(() {
+      _otpEnviado = false;
+      _otpController.clear();
+      _erro = '';
+    });
+  }
+
   @override
   void dispose() {
-    _matriculaController.dispose();
-    _senhaController.dispose();
+    _emailController.dispose();
+    _otpController.dispose();
     super.dispose();
   }
 
@@ -62,15 +90,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // Equivalente ao linear-gradient do CSS
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF0ea5e9), // #0ea5e9
-              Color(0xFF172554), // #172554
-            ],
+            colors: [Color(0xFF0ea5e9), Color(0xFF172554)],
           ),
         ),
         child: Center(
@@ -93,7 +117,6 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Título
                   const Text(
                     'Acesso ao Sistema',
                     style: TextStyle(
@@ -104,30 +127,45 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Campo matrícula
-                  _campo(
-                    label: 'Matrícula',
-                    placeholder: '000000',
-                    controller: _matriculaController,
-                    obscure: false,
-                  ),
-                  const SizedBox(height: 16),
+                  // Etapa 1: email
+                  if (!_otpEnviado) ...[
+                    _campo(
+                      label: 'Email',
+                      placeholder: 'seu@email.com',
+                      controller: _emailController,
+                      obscure: false,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                  ],
 
-                  // Campo senha
-                  _campo(
-                    label: 'Senha',
-                    placeholder: '******',
-                    controller: _senhaController,
-                    obscure: true,
-                  ),
+                  // Etapa 2: OTP
+                  if (_otpEnviado) ...[
+                    Text(
+                      'Código enviado para\n${_emailController.text.trim()}',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF64748b),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _campo(
+                      label: 'Código OTP',
+                      placeholder: '000000',
+                      controller: _otpController,
+                      obscure: false,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ],
+
                   const SizedBox(height: 8),
 
-                  // Mensagem de erro
-                  if (_erroLogin.isNotEmpty)
+                  // Erro
+                  if (_erro.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Text(
-                        _erroLogin,
+                        _erro,
                         style: const TextStyle(
                           color: Color(0xFFdc2626),
                           fontSize: 14,
@@ -138,11 +176,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 8),
 
-                  // Botão entrar
+                  // Botão principal
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: _carregando ? null : _handleSubmit,
+                      onPressed: _carregando
+                          ? null
+                          : (_otpEnviado ? _handleLogin : _handleSendOtp),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0284c7),
                         disabledBackgroundColor: const Color(
@@ -154,7 +194,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       child: Text(
-                        _carregando ? 'Entrando...' : 'Entrar',
+                        _carregando
+                            ? (_otpEnviado ? 'Entrando...' : 'Enviando...')
+                            : (_otpEnviado ? 'Entrar' : 'Enviar código'),
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -163,6 +205,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+
+                  // Voltar (só na etapa do OTP)
+                  if (_otpEnviado) ...[
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: _carregando ? null : _voltarParaEmail,
+                      child: const Text(
+                        'Usar outro email',
+                        style: TextStyle(
+                          color: Color(0xFF0284c7),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -172,12 +229,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Widget helper para os campos — evita repetição
   Widget _campo({
     required String label,
     required String placeholder,
     required TextEditingController controller,
     required bool obscure,
+    TextInputType keyboardType = TextInputType.text,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,6 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
         TextField(
           controller: controller,
           obscureText: obscure,
+          keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: placeholder,
             filled: true,
