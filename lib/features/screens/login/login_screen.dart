@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_yoji/features/auth/services/User_Services/login_service.dart';
-import 'package:tcc_yoji/features/screens/home_screen.dart';
+import 'package:tcc_yoji/features/screens/tela_home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final void Function(dynamic data)? onLogin;
@@ -56,11 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (context.mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (_) => HomeScreen(
-              matricula: data.user?['matricula']?.toString() ?? '',
-            ),
-          ),
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
         );
       }
     } catch (e) {

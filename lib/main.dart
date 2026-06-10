@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_yoji/core/storage/securite_storage_service.dart';
-import 'package:tcc_yoji/features/screens/login_screen.dart';
-import 'package:tcc_yoji/features/screens/home_screen.dart';
+import 'package:tcc_yoji/features/screens/login/login_screen.dart';
+import 'package:tcc_yoji/features/screens/tela_home/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,20 +42,12 @@ class _SplashRouterState extends State<SplashRouter> {
 
     if (!mounted) return;
 
-    if (logado) {
-      final userJson = await _storage.lerUser();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(matricula: userJson ?? ''),
-        ),
-      );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => logado ? const HomeScreen() : const LoginScreen(),
+      ),
+    );
   }
 
   @override
