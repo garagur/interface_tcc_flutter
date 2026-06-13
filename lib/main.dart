@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tcc_yoji/core/storage/securite_storage_service.dart';
 import 'package:tcc_yoji/features/screens/login/login_screen.dart';
 import 'package:tcc_yoji/features/screens/tela_home/home_screen.dart';
@@ -16,6 +17,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TCC App',
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('pt', 'BR')],
       home: const SplashRouter(),
     );
   }

@@ -5,6 +5,7 @@ import 'package:tcc_yoji/core/storage/securite_storage_service.dart';
 import 'package:tcc_yoji/features/screens/login/login_screen.dart';
 import 'package:tcc_yoji/features/auth/models/agendamento_sala_model.dart';
 import 'package:tcc_yoji/features/auth/services/Agendamentos_Services/AgendamentoSala/Show_Agendamento_Sala_Service.dart';
+import 'package:tcc_yoji/features/screens/agendamento/tela_agendamento.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -119,8 +120,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return semanas;
   }
 
-  // ── Build ─────────────────────────────────────────────
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,8 +127,12 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: _buildAppBar(),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // TODO: navegar para tela de agendamento
+        onPressed: () async {
+          final resultado = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CriarAgendamentoScreen()),
+          );
+          if (resultado == true) _carregarDados();
         },
         backgroundColor: const Color(0xFF4b4b4b),
         icon: const Icon(Icons.add, color: Colors.white),

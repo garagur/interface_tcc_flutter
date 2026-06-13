@@ -37,10 +37,8 @@ Future<dynamic> cadastrarAgendamento(
 
   final dados = _parseJson(response.body);
 
-  // Verifica se o status code NÃO está na faixa de sucesso (200-299)
   if (response.statusCode < 200 || response.statusCode >= 300) {
     if (dados != null && dados['errors'] != null) {
-      // Trata erros validation estruturados (ex: Laravel, .NET)
       final Map<String, dynamic> errors = dados['errors'];
       final dynamic errorMessages = errors.values
           .expand((element) {

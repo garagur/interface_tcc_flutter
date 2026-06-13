@@ -1,4 +1,3 @@
-// lib/features/auth/services/Horario_Services/list_horarios_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tcc_yoji/config/routes/Horario_endpoints.dart';
@@ -36,11 +35,7 @@ class ListHorariosService {
       );
     }
 
-    final lista = dados == null
-        ? <dynamic>[]
-        : dados is List
-        ? dados as List<dynamic>
-        : (dados['blocos'] ?? dados['data'] ?? []) as List<dynamic>;
+    final lista = (dados?['blocos'] ?? []) as List<dynamic>;
 
     return lista
         .map((s) => Horario.fromJson(s as Map<String, dynamic>))
@@ -68,12 +63,10 @@ class ListHorariosService {
       );
     }
 
-    final raw = dados == null
-        ? <dynamic>[]
-        : dados is List
-        ? dados as List<dynamic>
-        : (dados['blocos'] ?? dados['data'] ?? []) as List<dynamic>;
+    final lista = (dados?['blocos'] ?? []) as List<dynamic>;
 
-    return raw.map((s) => Horario.fromJson(s as Map<String, dynamic>)).toList();
+    return lista
+        .map((s) => Horario.fromJson(s as Map<String, dynamic>))
+        .toList();
   }
 }
