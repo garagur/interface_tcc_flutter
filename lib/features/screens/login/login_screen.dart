@@ -16,12 +16,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final _otpController = TextEditingController();
   final _loginService = LoginService();
 
-  // Controla em qual etapa estamos
   bool _otpEnviado = false;
   String _erro = '';
   bool _carregando = false;
 
-  // Etapa 1 — envia OTP
   Future<void> _handleSendOtp() async {
     setState(() {
       _erro = '';
@@ -38,7 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Etapa 2 — valida OTP e loga
   Future<void> _handleLogin() async {
     setState(() {
       _erro = '';
@@ -66,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Volta para a etapa do email
   void _voltarParaEmail() {
     setState(() {
       _otpEnviado = false;

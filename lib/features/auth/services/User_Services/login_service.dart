@@ -7,7 +7,6 @@ import 'package:tcc_yoji/core/storage/securite_storage_service.dart';
 class LoginService {
   final _secureStorage = SecureStorageService();
 
-  // ---------- helper ----------
   Map<String, dynamic>? _parseJson(http.Response resposta) {
     final text = resposta.body;
     if (text.isEmpty) return null;
@@ -18,7 +17,6 @@ class LoginService {
     }
   }
 
-  // ---------- etapa 1: envia OTP ----------
   Future<void> sendOtp(String email) async {
     if (email.isEmpty) {
       throw Exception('Preencha o email!');
@@ -40,7 +38,6 @@ class LoginService {
     }
   }
 
-  // ---------- etapa 2: valida OTP e faz login ----------
   Future<AuthResponse> loginUser(String email, String otp) async {
     if (email.isEmpty || otp.isEmpty) {
       throw Exception('Preencha o código enviado ao seu email!');
@@ -52,7 +49,7 @@ class LoginService {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: jsonEncode({'email': email, 'password': otp}),
+      body: jsonEncode({'email': email, 'password': otp, 'platform': 'mobile'}),
     );
 
     final dados = _parseJson(resposta);
@@ -63,7 +60,6 @@ class LoginService {
 
     if (dados == null) throw Exception('Resposta inválida do servidor.');
 
-    // Normaliza token e user igual ao Svelte
     final token = dados['token'] ?? dados['access_token'] ?? '';
     final user = dados['user'] ?? dados['data']?['user'] ?? {};
 

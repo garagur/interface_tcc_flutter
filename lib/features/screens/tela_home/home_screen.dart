@@ -82,8 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ── Helpers de grade ──────────────────────────────────
-
   Map<String, List<AgendamentoSala>> get _agendamentosPorData {
     final map = <String, List<AgendamentoSala>>{};
     for (final ag in _agendamentos) {
