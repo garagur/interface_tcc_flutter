@@ -6,6 +6,7 @@ class Horario {
   final dynamic salaId;
   final String salaNome;
   final dynamic professorId;
+  final String professorNome;
   final String diaSemana;
   final String disciplina;
   final String horaInicio;
@@ -18,6 +19,7 @@ class Horario {
     required this.salaId,
     required this.salaNome,
     required this.professorId,
+    this.professorNome = '',
     required this.diaSemana,
     required this.disciplina,
     required this.horaInicio,
@@ -31,6 +33,7 @@ class Horario {
     salaId: j['sala']?['id'] ?? j['sala_id'] ?? '',
     salaNome: j['sala']?['nome'] ?? '',
     professorId: j['professor']?['id'] ?? j['professor_id'] ?? '',
+    professorNome: j['professor']?['name'] ?? '',
     diaSemana: j['dia_semana'] ?? '',
     disciplina: j['disciplina'] ?? '',
     horaInicio: j['hora_inicio'] ?? '',

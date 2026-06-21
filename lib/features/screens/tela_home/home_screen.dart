@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:tcc_yoji/core/storage/securite_storage_service.dart';
 import 'package:tcc_yoji/features/screens/login/login_screen.dart';
+import 'package:tcc_yoji/features/screens/tela_meus_agendamentos/meus_agendamentos_screen.dart';
 import 'package:tcc_yoji/features/auth/models/agendamento_sala_model.dart';
-import 'package:tcc_yoji/features/auth/services/Agendamentos_Services/AgendamentoSala/Show_Agendamento_Sala_Service.dart';
+import 'package:tcc_yoji/features/auth/services/Agendamentos_Services/AgendamentoSala/List_Agendamento_Sala_Service.dart';
 import 'package:tcc_yoji/features/screens/agendamento/tela_agendamento.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -169,7 +170,10 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: const Icon(Icons.calendar_today, color: Colors.white),
           tooltip: 'Meus Agendamentos',
           onPressed: () {
-            // TODO: navegar para meus agendamentos
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const MeusAgendamentosScreen()),
+            );
           },
         ),
         IconButton(
@@ -457,7 +461,7 @@ class _AgendamentoTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Sala ${ag.salaId}',
+                  ag.salaNome.isNotEmpty ? ag.salaNome : 'Sala ${ag.salaId}',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -483,6 +487,27 @@ class _AgendamentoTile extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (ag.usuarioNome.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.person,
+                        size: 14,
+                        color: Color(0xFF64748b),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        ag.usuarioNome,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF334155),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
                 if (ag.obs.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(

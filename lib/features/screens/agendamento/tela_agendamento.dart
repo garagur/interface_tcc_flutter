@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc_yoji/core/storage/securite_storage_service.dart';
 import 'package:tcc_yoji/features/auth/models/agendamento_sala_model.dart';
 import 'package:tcc_yoji/features/auth/models/Horario_model.dart';
-import 'package:tcc_yoji/features/auth/services/Agendamentos_Services/AgendamentoSala/Show_Agendamento_Sala_Service.dart';
+import 'package:tcc_yoji/features/auth/services/Agendamentos_Services/AgendamentoSala/List_Agendamento_Sala_Service.dart';
 import 'package:tcc_yoji/features/auth/services/Agendamentos_Services/AgendamentoSala/Create_Agendamento_Sala_Service.dart';
 import 'package:tcc_yoji/features/auth/services/Horario_Services/List_horarios_service.dart';
 import 'package:tcc_yoji/features/auth/services/Itens_Services/salaServices/List_Sala_Services.dart';
@@ -333,6 +333,36 @@ class _CriarAgendamentoScreenState extends State<CriarAgendamentoScreen> {
     }
     if (_horaFim == null) {
       setState(() => _erro = 'Selecione a hora de fim.');
+      return;
+    }
+
+    final inicioSelecionado = DateTime(
+      _dataSelecionada!.year,
+      _dataSelecionada!.month,
+      _dataSelecionada!.day,
+      _horaInicio!.hour,
+      _horaInicio!.minute,
+    );
+
+    if (inicioSelecionado.isBefore(DateTime.now())) {
+      setState(
+        () => _erro = 'Não é possível agendar em um horário que já passou.',
+      );
+      return;
+    }
+
+    final fimSelecionado = DateTime(
+      _dataSelecionada!.year,
+      _dataSelecionada!.month,
+      _dataSelecionada!.day,
+      _horaFim!.hour,
+      _horaFim!.minute,
+    );
+
+    if (!fimSelecionado.isAfter(inicioSelecionado)) {
+      setState(
+        () => _erro = 'A hora de fim deve ser depois da hora de início.',
+      );
       return;
     }
 
@@ -693,6 +723,14 @@ class _CriarAgendamentoScreenState extends State<CriarAgendamentoScreen> {
                                         color: Color(0xFF64748b),
                                       ),
                                     ),
+                                  if (b.professorNome.isNotEmpty)
+                                    Text(
+                                      b.professorNome,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF64748b),
+                                      ),
+                                    ),
                                 ],
                               ),
                             );
@@ -707,7 +745,6 @@ class _CriarAgendamentoScreenState extends State<CriarAgendamentoScreen> {
     );
   }
 
-  // ── Lista de agendamentos existentes da sala ──────────
   Widget _buildListaAgendamentos() {
     final hoje = DateTime.now();
     final agsValidos = _agendamentosSala.where((ag) {
@@ -769,6 +806,27 @@ class _CriarAgendamentoScreenState extends State<CriarAgendamentoScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                    if (ag.usuarioNome.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.person,
+                            size: 13,
+                            color: Color(0xFF64748b),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            ag.usuarioNome,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF334155),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     if (ag.obs.isNotEmpty)
                       Text(
                         ag.obs,
