@@ -62,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     try {
       final lista = await carregarAgendamentosSalas(_token);
+      lista.sort((a, b) => a.dataHoraInicio.compareTo(b.dataHoraInicio));
       setState(() => _agendamentos = lista);
     } catch (e) {
       setState(() => _erro = e.toString().replaceFirst('Exception: ', ''));

@@ -38,7 +38,6 @@ class AgendamentoSala {
     'obs': obs,
   };
 
-  /// Verifica se este agendamento ainda está no futuro (equivalente a isFuturo no Svelte)
   bool get isFuturo {
     final inicio = DateTime.tryParse(dataHoraInicio);
     if (inicio == null) return false;

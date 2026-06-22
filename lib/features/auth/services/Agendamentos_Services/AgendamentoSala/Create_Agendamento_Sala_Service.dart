@@ -12,7 +12,6 @@ dynamic _parseJson(String responseBody) {
   }
 }
 
-/// Função principal para cadastrar o agendamento
 Future<dynamic> cadastrarAgendamento(
   AgendamentoSala novoAgendamentoSala,
   String? token,

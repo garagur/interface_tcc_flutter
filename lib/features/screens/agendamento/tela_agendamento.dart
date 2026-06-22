@@ -97,6 +97,7 @@ class _CriarAgendamentoScreenState extends State<CriarAgendamentoScreen> {
     setState(() => _carregandoSalas = true);
     try {
       final lista = await _salaService.carregarSalas(_token);
+
       setState(
         () => _salas = lista
             .map(
@@ -131,6 +132,9 @@ class _CriarAgendamentoScreenState extends State<CriarAgendamentoScreen> {
             .where((h) => h.salaId.toString() == salaId.toString())
             .toList();
         _agendamentosSala = resultados[1] as List<AgendamentoSala>;
+        _agendamentosSala.sort(
+          (a, b) => a.dataHoraInicio.compareTo(b.dataHoraInicio),
+        );
       });
     } catch (e) {
       setState(() => _erro = e.toString().replaceFirst('Exception: ', ''));
